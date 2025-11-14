@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feliz Cumpleaños Ana</title>
+  <style>
+    :root{--accent:#ff88cc;--accent-2:#ff66b2}
+    html,body{height:100%;margin:0}
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: #ffddaa; /* color acaramelado */
+      height:100vh;
+      overflow:hidden;
+      background-image: url('AQUI_FONDO_ROMANTICO');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    h1{
+      font-size:3.8rem;
+      margin:0;
+      padding:20px 30px;
+      text-align:center;
+      text-shadow: 0 4px 30px rgba(0,0,0,0.6), 0 0 18px rgba(255,182,193,0.6);
+      cursor:default;
+      position:relative;
+    }
+
+    .subtitle{
+      margin-top:10px;
+      font-size:1.1rem;
+      text-align:center;
+      opacity:0.95;
+    }
+
+    .controls{
+      position:fixed;
+      right:20px;
+      bottom:20px;
+      display:flex;
+      gap:10px;
+      flex-direction:column;
+    }
+    .btn{
+      background:linear-gradient(180deg,var(--accent),var(--accent-2));
+      border:none;padding:10px 14px;border-radius:12px;color:#fff;font-weight:600;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,0.35);
+    }
+
+    .heart{
+      position:fixed;pointer-events:none;font-size:24px;transform:translate(-50%, -50%);opacity:0;filter:drop-shadow(0 6px 12px rgba(255,100,150,0.3));
+      animation:rise 2s ease-out forwards;
+    }
+    @keyframes rise{to{transform:translate(-50%,-250% ) scale(1.4);opacity:0}}
+
+    #petalos{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+    .petalo{position:absolute;top:-5vh;left:0;font-size:28px;opacity:0;animation:caer linear forwards}
+    @keyframes caer{to{transform:translateY(110vh) rotate(360deg);opacity:0.95}}
+
+    .sparkle{
+      position:absolute; width:6px;height:6px;border-radius:50%;background:radial-gradient(circle at 30% 30%, #fff 0%, rgba(255,200,240,0.8) 60%, transparent 70%);
+      pointer-events:none;opacity:0;transform:scale(0.6);animation:twinkle 1000ms linear infinite;
+    }
+    @keyframes twinkle{0%{opacity:0}50%{opacity:1;transform:scale(1)}100%{opacity:0}}
+
+    .float-heart{position:fixed;left:50%;top:20%;font-size:40px;opacity:0.12;transform:translateX(-50%);pointer-events:none}
+
+    .confetti{position:fixed;pointer-events:none}
+
+    @media (max-width:480px){h1{font-size:2.4rem}}
+  </style>
+</head>
+<body>
+  <div id="main">
+    <h1 id="titulo">Feliz Cumpleaños Ana 💖</h1>
+    <div class="subtitle">Aunque estemos lejos, mi deseo por ti es enorme ✨</div>
+  </div>
+
+  <div class="float-heart">💗</div>
+  <div id="petalos"></div>
+
+  <div class="controls">
+    <button class="btn" id="confettiBtn">Confeti ✨</button>
+  </div>
+
+<script>
+  const petalosLayer = document.getElementById('petalos');
+  function crearPetalo(){
+    const p = document.createElement('div');
+    p.className='petalo';
+    p.innerText = ['🌸','🌼'][Math.floor(Math.random()*2)];
+    const size = Math.random()*28+18;
+    p.style.fontSize = size+'px';
+    p.style.left = Math.random()*100 + 'vw';
+    p.style.opacity = 0.8*Math.random()+0.2;
+    const dur = Math.random()*6+6;
+    p.style.animationDuration = dur+'s';
+    p.style.transform = `rotate(${Math.random()*360}deg)`;
+    petalosLayer.appendChild(p);
+    setTimeout(()=>p.remove(), (dur+1)*1000);
+  }
+  setInterval(crearPetalo, 420);
+
+  document.addEventListener('click', (e)=>{
+    const tag = e.target.tagName.toLowerCase();
+    if(tag==='button') return;
+    createHeart(e.clientX, e.clientY);
+  });
+  function createHeart(x,y){
+    const el = document.createElement('div');
+    el.className='heart';
+    el.innerText = ['💖','💗','💝','💕'][Math.floor(Math.random()*4)];
+    el.style.left = x+'px';
+    el.style.top = y+'px';
+    el.style.fontSize = (Math.random()*18+18)+'px';
+    el.style.opacity = 1;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(), 2000);
+  }
+
+  const confettiBtn = document.getElementById('confettiBtn');
+  confettiBtn.addEventListener('click', ()=>{ launchConfetti(); });
+  function launchConfetti(){
+    const colors=['#ff6b9a','#ffd6e0','#ffc9de','#fff1f8','#ffb3d9'];
+    for(let i=0;i<80;i++){
+      const c=document.createElement('div');
+      c.className='confetti';
+      const w=8+Math.random()*8; const h=6+Math.random()*10;
+      c.style.width=w+'px'; c.style.height=h+'px';
+      c.style.left = Math.random()*100 + 'vw'; c.style.top='-10vh';
+      c.style.background=colors[Math.floor(Math.random()*colors.length)];
+      c.style.opacity=0.95; c.style.transform='rotate('+ (Math.random()*360)+'deg)';
+      document.body.appendChild(c);
+      const dur = 2000+Math.random()*1800;
+      c.animate([{transform:'translateY(0) rotate(0deg)', opacity:1},{transform:'translateY(120vh) rotate(540deg)', opacity:0}],{duration:dur, easing:'cubic-bezier(.2,.8,.2,1)'}).onfinish=()=>c.remove();
+    }
+  }
+
+  document.addEventListener('keydown',(e)=>{ if(e.key==='c') confettiBtn.click(); });
+
+  const titulo = document.getElementById('titulo');
+  titulo.addEventListener('click',(e)=>{ createHeart(e.clientX,e.clientY); });
+  titulo.addEventListener('mousemove', (ev)=>{
+    const s = document.createElement('div');
+    s.className='sparkle';
+    s.style.left = (ev.clientX - 6) + 'px';
+    s.style.top = (ev.clientY - 6) + 'px';
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(), 900);
+  });
+
+  document.addEventListener('mousemove', (e)=>{
+    const pctX = (e.clientX / window.innerWidth - 0.5) * 20;
+    petalosLayer.style.transform = `translateX(${pctX}px)`;
+  });
+
+  window.addEventListener('load', ()=>{ setTimeout(()=>launchConfetti(), 800); });
+</script>
+</body>
+</html>
